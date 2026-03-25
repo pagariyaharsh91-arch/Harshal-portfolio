@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harshal Pagariya — Web Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #2a2a3a;
+      --accent: #00e5ff;
+      --accent2: #7b5ea7;
+      --accent3: #ff6b6b;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --glow: 0 0 40px rgba(0,229,255,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,229,255,0.4);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 80px 80px;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* grid bg lines */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-text { position: relative; z-index: 2; }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    h1 .last-name {
+      -webkit-text-stroke: 1px var(--accent);
+      color: transparent;
+      display: block;
+    }
+
+    .hero-tagline {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-weight: 500;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(0,229,255,0.5);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* HERO PHOTO SIDE */
+    .hero-visual {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+    }
+
+    .photo-wrapper {
+      position: relative;
+      width: 320px;
+      height: 380px;
+    }
+    .photo-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+      position: relative;
+      z-index: 2;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .photo-placeholder svg { opacity: 0.3; }
+
+    /* decorative offset box */
+    .photo-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 16px; left: 16px;
+      width: 100%; height: 100%;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      opacity: 0.3;
+      z-index: 1;
+    }
+    .photo-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,229,255,0.2), transparent 70%);
+      z-index: 0;
+    }
+
+    /* social pills on photo card */
+    .social-strip {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .social-btn svg { flex-shrink: 0; }
+
+    /* ── SECTION COMMON ── */
+    section {
+      padding: 100px 80px;
+    }
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 60px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 56px;
+      line-height: 1.1;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .about-text p span { color: var(--accent); }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--glow); }
+    .skill-card:hover::before { transform: scaleX(1); }
+
+    .skill-icon {
+      font-size: 1.6rem;
+    }
+    .skill-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .skill-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .skill-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(0,229,255,0.07);
+      padding: 3px 8px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.25s;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: var(--glow); }
+
+    .project-thumb {
+      height: 180px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .project-thumb.t2 { background: linear-gradient(135deg, #1a1a2e, var(--accent2)); }
+    .project-thumb.t3 { background: linear-gradient(135deg, #0d2137, #00b4d8); }
+
+    .project-thumb-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      opacity: 0.15;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .project-thumb-icon {
+      position: absolute;
+      font-size: 3rem;
+    }
+
+    .project-body { padding: 24px; }
+    .project-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .project-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .project-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: all 0.2s;
+      flex: 1;
+      justify-content: center;
+    }
+    .project-link.github {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .project-link.github:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: #888;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .project-link.demo {
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.25);
+      color: var(--accent);
+    }
+    .project-link.demo:hover {
+      background: rgba(0,229,255,0.16);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0,229,255,0.2);
+      transform: translateY(-2px);
+    }
+    .project-link-placeholder {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      flex: 1;
+      justify-content: center;
+      border: 1px dashed var(--border);
+      color: rgba(136,136,153,0.4);
+      font-family: 'DM Mono', monospace;
+      font-style: italic;
+    }
+
+    /* ── CONTACT ── */
+    #contact { text-align: center; }
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-inner p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    .contact-item:hover { border-color: var(--accent); color: var(--accent); }
+    .contact-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(0,229,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-label { flex: 1; text-align: left; }
+    .contact-value { color: var(--muted); font-size: 0.75rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 80px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; } 50% { opacity: 0; }
+    }
+    .cursor-blink {
+      display: inline-block;
+      width: 3px; height: 1em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: text-bottom;
+      animation: blink 1s infinite;
+    }
+
+    .hero-text > * { animation: fadeUp 0.7s both; }
+    .hero-eyebrow { animation-delay: 0.1s; }
+    h1 { animation-delay: 0.2s; }
+    .hero-tagline { animation-delay: 0.35s; }
+    .hero-cta { animation-delay: 0.5s; }
+    .hero-visual { animation: fadeUp 0.7s 0.3s both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 120px 24px 80px; text-align: center; }
+      .hero-eyebrow { justify-content: center; }
+      .hero-tagline { margin: 0 auto 40px; }
+      .hero-cta { justify-content: center; }
+      .hero-visual { order: -1; }
+      .photo-wrapper { width: 240px; height: 280px; }
+      section { padding: 80px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      footer { flex-direction: column; gap: 8px; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">HP_</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-text">
+    <div class="hero-eyebrow">Web Developer</div>
+    <h1>
+      Harshal
+      <span class="last-name">Pagariya</span>
+    </h1>
+    <p class="hero-tagline">
+      Building <span style="color:var(--accent)">fast, scalable</span> web applications with clean backend architecture and intuitive frontends.<span class="cursor-blink"></span>
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        View Projects
+      </a>
+      <a href="#contact" class="btn btn-outline">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="photo-wrapper">
+      <div class="photo-frame">
+        <!-- ✅ REPLACE src with your actual photo URL -->
+        <img id="profilePhoto" src="image\harshal_photo.jpeg" alt="Harshal Pagariya"
+          onerror="this.style.display='none'; document.getElementById('photoPlaceholder').style.display='flex';"
+          style="display:none"/>
+        <div class="photo-placeholder" id="photoPlaceholder">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          Add Your Photo
+          <span style="font-size:0.62rem; color: rgba(136,136,153,0.5)">Replace src in &lt;img id="profilePhoto"&gt;</span>
+        </div>
+      </div>
+
+      <div class="social-strip">
+        <!-- 🔗 Replace # with your actual links -->
+        <a href="https://www.linkedin.com/in/harshalpagariya?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-btn" id="linkedinLink" title="LinkedIn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+       
+        <a href="https://www.instagram.com/itsmeharshal27?igsh=MW10bWh3ZTgwbjMxbA==" class="social-btn" id="instaLink" title="Instagram">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="section-title">A bit about<br/>who I am</div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Hey! I'm <span>Harshal Pagariya</span>, a passionate web developer with a strong focus on building robust, full-stack web applications. I love turning ideas into real, working products on the web.</p>
+      <p>My stack revolves around <span>Node.js & Express.js</span> for backend services, and I build secure systems using <span>JWT Authentication</span>. On the frontend, I craft pixel-perfect interfaces using <span>HTML5, CSS3, and JavaScript</span>.</p>
+      <p>I'm always exploring new technologies and best practices to write cleaner, more efficient code — from API design to responsive UI development.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Technologies</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">FS</div>
+        <div class="stat-label">Full Stack Focus</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Curiosity Level</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Passion: Web Dev</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="section-label">Skills</div>
+  <div class="section-title">What I work<br/>with</div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🟢</div>
+      <div class="skill-name">Node.js</div>
+      <div class="skill-desc">Server-side JavaScript runtime for building scalable network applications.</div>
+      <div class="skill-tag">Backend</div>
+    </div>
+   
+    
+    <div class="skill-card">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-name">HTML5</div>
+      <div class="skill-desc">Semantic, accessible markup for modern, standards-compliant web pages.</div>
+      <div class="skill-tag">Frontend</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🎨</div>
+      <div class="skill-name">CSS3</div>
+      <div class="skill-desc">Responsive layouts, animations, flexbox, grid — beautiful UI from scratch.</div>
+      <div class="skill-tag">Styling</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">✨</div>
+      <div class="skill-name">JavaScript</div>
+      <div class="skill-desc">Dynamic interactions, DOM manipulation, async programming with ES6+.</div>
+      <div class="skill-tag">Language</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="section-label">Projects</div>
+  <div class="section-title">Things I've<br/>built</div>
+  <div class="projects-grid">
+
+    
+    <!-- PROJECT 3 — Replace github href with your repo link -->
+    <div class="project-card">
+      <div class="project-thumb t3">
+        <div class="project-thumb-label">WEB</div>
+        <div class="project-thumb-icon">💻</div>
+      </div>
+      <div class="project-body">
+        <div class="project-name">Responsive Full-Stack website</div>
+        <div class="project-desc">A fully responsive, interactive web interface crafted with pure HTML5, CSS3,node.js and JavaScript — with the backend database integration.</div>
+        <div class="project-tags">
+          <span class="project-tag">HTML5</span>
+          <span class="project-tag">CSS3</span>
+          <span class="project-tag">JavaScript</span>
+           <span class="project-tag">node.js</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/pagariyaharsh91-arch/Team-shop.git" target="_blank" class="project-link github">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.2 22 16.447 22 12.021 22 6.484 17.522 2 12 2z"/></svg>
+            GitHub
+          </a>
+          <!-- If you have a live demo, replace span with: <a href="YOUR_LIVE_URL" target="_blank" class="project-link demo">🔗 Live Demo</a> -->
+          <span class="project-link-placeholder">No live demo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ➕ ADD MORE PROJECTS — Copy this block and fill in your details -->
+    <!-- 
+    <div class="project-card">
+      <div class="project-thumb" style="background: linear-gradient(135deg, #1a2e1a, #22c55e);">
+        <div class="project-thumb-label">APP</div>
+        <div class="project-thumb-icon">🚀</div>
+      </div>
+      <div class="project-body">
+        <div class="project-name">Your Project Name</div>
+        <div class="project-desc">Describe what this project does and what problem it solves. Keep it concise but impactful.</div>
+        <div class="project-tags">
+          <span class="project-tag">Tech 1</span>
+          <span class="project-tag">Tech 2</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/yourusername/your-repo" target="_blank" class="project-link github">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.2 22 16.447 22 12.021 22 6.484 17.522 2 12 2z"/></svg>
+            GitHub
+          </a>
+          <a href="https://your-live-demo.com" target="_blank" class="project-link demo">🔗 Live Demo</a>
+        </div>
+      </div>
+    </div>
+    -->
+
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label" style="justify-content:center">Contact</div>
+    <div class="section-title">Let's work<br/>together</div>
+    <p>Whether you have a project in mind, a question, or just want to say hello — feel free to reach out. I'm always open to new opportunities.</p>
+    <div class="contact-links">
+      <!-- 🔗 Replace href with your actual links/email -->
+      <a href="mailto:your@gmail.com" class="contact-item" id="gmailContact">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+        </div>
+        <div class="contact-label">Gmail</div>
+        <div class="contact-value">pagariyaharshal27@gmail.com</div>
+      </a>
+      <a href="https://www.linkedin.com/in/harshalpagariya?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="contact-item" id="linkedinContact" target="_blank">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        </div>
+        <div class="contact-label">LinkedIn</div>
+        <div class="contact-value">linkedin.com/in/harshalpagariya</div>
+      </a>
+      <a href="https://www.instagram.com/itsmeharshal27?igsh=MW10bWh3ZTgwbjMxbA==" class="contact-item" id="instaContact" target="_blank">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="var(--accent)" stroke="none"/></svg>
+        </div>
+        <div class="contact-label">Instagram</div>
+        <div class="contact-value">@itsmeharshal27</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>© 2025 Harshal Pagariya</span>
+  <span>Built with HTML · CSS · JS</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cur = document.getElementById('cur');
+  const ring = document.getElementById('curRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cur.style.left = (mx - 5) + 'px'; cur.style.top = (my - 5) + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = (rx - 18) + 'px'; ring.style.top = (ry - 18) + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.style.width = '56px'; ring.style.height = '56px'; ring.style.borderColor = 'rgba(0,229,255,0.6)'; });
+    el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; ring.style.borderColor = 'rgba(0,229,255,0.4)'; });
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.skill-card, .project-card, .stat-card, .contact-item').forEach(el => {
+    el.style.opacity = 0; el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.25s, box-shadow 0.25s';
+    obs.observe(el);
+  });
+
+  // Show photo if src exists
+  const img = document.getElementById('profilePhoto');
+  if(img.src && img.src !== window.location.href) { img.style.display = 'block'; document.getElementById('photoPlaceholder').style.display = 'none'; }
+</script>
+</body>
+</html>
