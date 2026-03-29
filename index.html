@@ -423,17 +423,21 @@
     /* ── PROJECTS ── */
     #projects { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
-    }
-    .project-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      transition: all 0.25s;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.25s;
+  height: fit-content !important;
+  min-height: unset !important;
+}
     .project-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: var(--glow); }
 
     .project-thumb {
@@ -528,22 +532,21 @@
       box-shadow: 0 0 20px rgba(0,229,255,0.2);
       transform: translateY(-2px);
     }
-    .project-link-placeholder {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 16px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      letter-spacing: 0.06em;
-      flex: 1;
-      justify-content: center;
-      border: 1px dashed var(--border);
-      color: rgba(136,136,153,0.4);
-      font-family: 'DM Mono', monospace;
-      font-style: italic;
-    }
-
+   .project-link-placeholder {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  flex: 1;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  color: rgba(136,136,153,0.4);
+  font-family: 'DM Mono', monospace;
+  font-style: italic;
+}
     /* ── CONTACT ── */
     #contact { text-align: center; }
     .contact-inner { max-width: 600px; margin: 0 auto; }
@@ -767,6 +770,23 @@
       <div class="skill-desc">Dynamic interactions, DOM manipulation, async programming with ES6+.</div>
       <div class="skill-tag">Language</div>
     </div>
+    <div class="skill-card">
+  <div class="skill-icon">⚡</div>
+  <div class="skill-name">REST APIs</div>
+  <div class="skill-desc">
+    Building and integrating RESTful APIs for frontend-backend communication, authentication, and data handling.
+  </div>
+  <div class="skill-tag">API</div>
+</div>
+
+<div class="skill-card">
+  <div class="skill-icon">🏪</div>
+  <div class="skill-name">SaaS Architecture</div>
+  <div class="skill-desc">
+    Experience building SaaS-style multi-shop systems with scalable architecture and shop-wise data isolation.
+  </div>
+  <div class="skill-tag">SYSTEM DESIGN</div>
+</div>
   </div>
 </section>
 
@@ -797,8 +817,8 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.2 22 16.447 22 12.021 22 6.484 17.522 2 12 2z"/></svg>
             GitHub
           </a>
-          <!-- If you have a live demo, replace span with: <a href="YOUR_LIVE_URL" target="_blank" class="project-link demo">🔗 Live Demo</a> -->
-          <span class="project-link-placeholder">No live demo</span>
+           <a href=" https://team-shop-frontend-198841258279.us-central1.run.app" target="_blank" class="project-link demo">🔗 Live Demo</a>
+        
         </div>
       </div>
     </div>
@@ -822,15 +842,14 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.2 22 16.447 22 12.021 22 6.484 17.522 2 12 2z"/></svg>
             GitHub
           </a>
-          <a href="https://your-live-demo.com" target="_blank" class="project-link demo">🔗 Live Demo</a>
+          <a href=" https://team-shop-frontend-198841258279.us-central1.run.app" target="_blank" class="project-link demo">🔗 Live Demo</a>
         </div>
       </div>
-    </div>
-    -->
+    </div>-->
+
 
   </div>
 </section>
-
 <!-- ── CONTACT ── -->
 <section id="contact">
   <div class="contact-inner">
